@@ -4,26 +4,24 @@
 import math
 
 
-def cylinder():
-    def circle():
-        full = (s * 2) + bok
-        return full
+def cylinder(r, h, full=True):
+    def circle(r):
+        return math.pi * (r ** 2)
 
-    s = math.pi * r ** 2
-    bok = s * h
+    s_cylinder = 2 * math.pi * r * h
 
-    a = input('1-площадь боковой поверхности 2-полная площадь целиндра: ')
+    c = input('Получить боковую площадь - side, или полную - full - ')
 
-    if a == '1':
-        print(bok)
-
-    elif a == '2':
-        circle()
-        full = circle()
-        print(full)
+    if c == 'full':
+        return s_cylinder + 2 * circle(r)
+    else:
+        print(s_cylinder)
 
 
 if __name__ == '__main__':
-    h = int(input("Введите высоту цилиндра: "))
-    r = int(input("Введите радиус круга: "))
-cylinder()
+    s_circle = 0
+    a = float(input("Введите радиус: "))
+    b = float(input("Введите высоту: "))
+
+    s = cylinder(a, b)
+    print(s)

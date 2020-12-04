@@ -58,26 +58,14 @@ def new_list(market):
     print(line)
 
 
-def new_select():
-    parts = command.split(' ', maxsplit=2)
-
-    period = str(parts[1])
-
-    # Инициализировать счетчик.
-    count = 0
-    # Проверить сведения товара из списка.
+def new_select(market):
+    # Инициализировать результат.
+    result = []
+    # Проверить сведения товаров из списка.
     for markets in market:
-        if markets.get('shop') >= period:
-            count += 1
-            print(
-                '{:>4}: {}'.format(count, markets.get('shop', ''))
-            )
-            print('Название товара:', markets.get('product', ''))
-            print('Стоимость в руб.:', markets.get('price', ''))
+        result.append(markets)
 
-    # Если счетчик равен 0, то работники не найдены.
-    if count == 0:
-        print("Магазин не найден.")
+    return result
 
 
 def new_load(filename):
@@ -87,8 +75,8 @@ def new_load(filename):
 
 
 def new_save(market, filename):
-        with open(filename, 'w') as fout:
-            json.dump(market, fout)
+    with open(filename, 'w') as fout:
+        json.dump(market, fout)
 
 
 if __name__ == '__main__':
@@ -116,7 +104,17 @@ if __name__ == '__main__':
             print(list(market))
 
         elif command.startswith('select '):
-            new_select()
+            # Разбить команду на части для выделения номера года.
+            parts = command.split(maxsplit=1)
+            # Получить список товаров.
+            selected = new_select(markets, int(parts[1]))
+
+            # Вывод списка товаров.
+            if selected:
+                for idx, worker in enumerate(selected, 1):
+                    print('{:>4}: {}'.format(idx, markets.get('name', '')))
+            else:
+                print("Товар не найден.")
 
         elif command.startswith('load '):
             # Разбить команду на части для имени файла.
@@ -143,6 +141,3 @@ if __name__ == '__main__':
 
         else:
             print(f"Неизвестная команда {command}", file=sys.stderr)
-
-
-

@@ -63,26 +63,14 @@ def new_list(market):
     return '\n'.join(table)
 
 
-def new_select():
-    parts = command.split(' ', maxsplit=2)
-
-    period = str(parts[1])
-
-    # Инициализировать счетчик.
-    count = 0
-    # Проверить сведения товара из списка.
+def new_select(market):
+    # Инициализировать результат.
+    result = []
+    # Проверить сведения товаров из списка.
     for markets in market:
-        if markets.get('product') >= period:
-            count += 1
-            print(
-                '{:>4}: {}'.format(count, markets.get('product', ''))
-            )
-            print('Название магазина:', markets.get('shop', ''))
-            print('Стоимость в руб.:', markets.get('price', ''))
+        result.append(markets)
 
-    # Если счетчик равен 0, то работники не найдены.
-    if count == 0:
-        print("Продукт не найден.")
+    return result
 
 
 if __name__ == '__main__':
@@ -109,7 +97,16 @@ if __name__ == '__main__':
             print(list(market))
 
         elif command.startswith('select '):
-            new_select()
+            # Разбить команду на части для выделения номера года.
+            parts = command.split(maxsplit=1)
+            # Получить список товаров.
+            selected = new_select(markets, int(parts[1]))
+            # Вывод списка товаров.
+            if selected:
+                for idx, markets in enumerate(selected, 1):
+                    print('{:>4}: {}'.format(idx, markets.get('name', '')))
+            else:
+                print("Товар не найден.")
 
         elif command == 'help':
             # Вывести справку о работе с программой.

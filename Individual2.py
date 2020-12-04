@@ -10,12 +10,7 @@ import sys
 import json
 
 
-def new_add():
-    # Запросить данные о товаре.
-    product = input("Название товара? ")
-    shop = input("Название магазина? ")
-    price = int(input("Стоимость товара в руб.? "))
-
+def new_add(market, product, shop, price):
     # Создать словарь.
     markets = {
         'product': product,
@@ -30,7 +25,7 @@ def new_add():
         market.sort(key=lambda item: item.get('name', ''))
 
 
-def new_list():
+def new_list(market):
     # Заголовок таблицы.
     line = '+-{}-+-{}-+-{}-+-{}-+'.format(
         '-' * 4,
@@ -85,43 +80,19 @@ def new_select():
         print("Магазин не найден.")
 
 
-def new_load():
-    # Разбить команду на части для выделения имени файла.
-    parts = command.split(' ', maxsplit=1)
-
+def new_load(filename):
     # Прочитать данные из файла JSON.
-    with open(parts[1], 'r') as f:
-        market = json.load(f)
-        return market
+    with open(filename, 'r') as f:
+        return json.load(f)
 
 
-def new_save():
-    # Разбить команду на части для выделения имени файла.
-    parts = command.split(' ', maxsplit=1)
-
-    # Сохранить данные в файл JSON.
-    with open(parts[1], 'w') as f:
-        json.dump(market, f)
-
-
-def new_help():
-    # Вывести справку о работе с программой.
-    print("Список команд:\n")
-    print("add - добавить продукт;")
-    print("list - вывести список продуктов;")
-    print("load <имя файла> - загрузить данные из файла;")
-    print("save <имя файла> - сохранить данные в файл;")
-    print("select <товар> - информация о товаре;")
-    print("help - отобразить справку;")
-    print("exit - завершить работу с программой.")
-
-
-def error():
-    print(f"Неизвестная команда {command}", file=sys.stderr)
+def new_save(market, filename):
+        with open(filename, 'w') as fout:
+            json.dump(market, fout)
 
 
 if __name__ == '__main__':
-    # Список работников.
+    # Список товаров.
     market = []
 
     # Организовать бесконечный цикл запроса команд.
@@ -134,22 +105,44 @@ if __name__ == '__main__':
             break
 
         elif command == 'add':
-            new_add()
+            # Запросить данные о товаре.
+            product = input("Название товара? ")
+            shop = input("Название магазина? ")
+            price = int(input("Стоимость товара в руб.? "))
+
+            new_add(market, product, shop, price)
 
         elif command == 'list':
-            new_list()
+            print(list(market))
 
         elif command.startswith('select '):
             new_select()
 
         elif command.startswith('load '):
-            market = new_load()
+            # Разбить команду на части для имени файла.
+            parts = command.split(maxsplit=1)
+            # Загрузить данные из файла
+            market = new_load(parts[1])
 
         elif command.startswith('save '):
-            new_save()
+            # Разбить команду на части для имени файла.
+            parts = command.split(maxsplit=1)
+            # Сохранить данные в файл
+            new_save(market, parts[1])
 
         elif command == 'help':
-            new_help()
+            # Вывести справку о работе с программой.
+            print("Список команд:\n")
+            print("add - добавить работника;")
+            print("list - вывести список работников;")
+            print("select <стаж> - запросить работников со стажем;")
+            print("load <имя_файла> - загрузить данные из файла;")
+            print("save <имя_файла> - сохранить данные в файл;")
+            print("help - отобразить справку;")
+            print("exit - завершить работу с программой.")
 
         else:
-            error()
+            print(f"Неизвестная команда {command}", file=sys.stderr)
+
+
+

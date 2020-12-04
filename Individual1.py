@@ -12,12 +12,7 @@
 import sys
 
 
-def new_add():
-    # Запросить данные о товаре.
-    product = input("Название товара? ")
-    shop = input("Название магазина? ")
-    price = int(input("Стоимость товара в руб.? "))
-
+def new_add(market, product, shop, price):
     # Создать словарь.
     markets = {
         'product': product,
@@ -32,7 +27,8 @@ def new_add():
         market.sort(key=lambda item: item.get('name', ''))
 
 
-def new_list():
+def new_list(market):
+    table = []
     # Заголовок таблицы.
     line = '+-{}-+-{}-+-{}-+-{}-+'.format(
         '-' * 4,
@@ -40,8 +36,8 @@ def new_list():
         '-' * 20,
         '-' * 20
     )
-    print(line)
-    print(
+    table.append(line)
+    table.append(
         '| {:^4} | {:^30} | {:^20} | {:^20} |'.format(
             "No",
             "Товар",
@@ -49,11 +45,11 @@ def new_list():
             "Стоимость в руб."
         )
     )
-    print(line)
+    table.append(line)
 
     # Вывести данные о всех товарах.
     for idx, markets in enumerate(market, 1):
-        print(
+        table.append(
             '| {:>4} | {:<30} | {:<20} | {:>20} |'.format(
                 idx,
                 markets.get('product', ''),
@@ -62,7 +58,9 @@ def new_list():
             )
         )
 
-    print(line)
+    table.append(line)
+
+    return '\n'.join(table)
 
 
 def new_select():
@@ -87,22 +85,8 @@ def new_select():
         print("Продукт не найден.")
 
 
-def new_help():
-    # Вывести справку о работе с программой.
-    print("Список команд:\n")
-    print("add - добавить продукт;")
-    print("list - вывести список продуктов;")
-    print("select <товар> - информация о товаре;")
-    print("help - отобразить справку;")
-    print("exit - завершить работу с программой.")
-
-
-def error():
-    print(f"Неизвестная команда {command}", file=sys.stderr)
-
-
 if __name__ == '__main__':
-    # Список работников.
+    # Список товаров.
     market = []
 
     # Организовать бесконечный цикл запроса команд.
@@ -115,16 +99,26 @@ if __name__ == '__main__':
             break
 
         elif command == 'add':
-            new_add()
+            product = input("Название товара? ")
+            shop = input("Название магазина? ")
+            price = int(input("Стоимость товара в руб.? "))
+
+            new_add(market, product, shop, price)
 
         elif command == 'list':
-            new_list()
+            print(list(market))
 
         elif command.startswith('select '):
             new_select()
 
         elif command == 'help':
-            new_help()
+            # Вывести справку о работе с программой.
+            print("Список команд:\n")
+            print("add - добавить продукт;")
+            print("list - вывести список продуктов;")
+            print("select <товар> - информация о товаре;")
+            print("help - отобразить справку;")
+            print("exit - завершить работу с программой.")
 
         else:
-            error()
+            print(f"Неизвестная команда {command}", file=sys.stderr)

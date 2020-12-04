@@ -143,7 +143,7 @@ if __name__ == '__main__':
             new_select()
 
         elif command.startswith('load '):
-            new_load()
+            market = new_load()
 
         elif command.startswith('save '):
             new_save()
